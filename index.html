@@ -55,7 +55,7 @@
         }
 
         .logo-container img {
-            max-width: 220px;
+            max-width: 260px;
         }
 
         /* Title */
@@ -130,6 +130,30 @@
             background: linear-gradient(90deg, rgba(0, 178, 232, 0.12), rgba(211, 215, 0, 0.1), rgba(236, 69, 5, 0.12));
             opacity: 0;
             transition: opacity 0.2s ease;
+        }
+
+        .box[data-tip]::after {
+            content: attr(data-tip);
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+            background: rgba(76, 73, 112, 0.92);
+            color: #fff;
+            border-radius: inherit;
+            font-size: 14px;
+            line-height: 1.4;
+            text-align: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.18s ease;
+            z-index: 2;
+        }
+
+        .box:hover::after {
+            opacity: 1;
         }
 
         .box span {
@@ -262,51 +286,56 @@
         <!-- Navigation Grid -->
         <div class="grid">
 
-            <a class="box" href="folder-tree-generator.html">
+            <a class="box" href="folder-tree-generator.html" data-tip="Build a standardized Day One folder structure, preview the map, and download a ZIP with auto-generated READMEs.">
                 <span class="icon" aria-hidden="true">
                     <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <rect x="8" y="18" width="22" height="14" rx="3" fill="#00b2e8" opacity="0.28"/>
-                        <rect x="16" y="28" width="30" height="16" rx="4" fill="#028598" opacity="0.35"/>
-                        <rect x="28" y="20" width="28" height="18" rx="4" fill="#d3d700" opacity="0.3"/>
-                        <path d="M18 46h28" stroke="#4c4970" stroke-width="2" stroke-linecap="round"/>
+                        <path d="M32 18v10" stroke="#4c4970" stroke-width="1.8" stroke-linecap="round"/>
+                        <path d="M32 28h-12c-2.2 0-4 1.8-4 4v4" stroke="#4c4970" stroke-width="1.8" stroke-linecap="round"/>
+                        <path d="M32 28h12c2.2 0 4 1.8 4 4v4" stroke="#4c4970" stroke-width="1.8" stroke-linecap="round"/>
+                        <path d="M20 36v4c0 2.2 1.8 4 4 4h5" stroke="#4c4970" stroke-width="1.8" stroke-linecap="round"/>
+                        <path d="M44 36v4c0 2.2-1.8 4-4 4h-5" stroke="#4c4970" stroke-width="1.8" stroke-linecap="round"/>
+                        <circle cx="32" cy="14" r="4" fill="#028598" stroke="#4c4970" stroke-width="1.4"/>
+                        <rect x="14" y="36" width="14" height="10" rx="2.5" fill="#00b2e8" opacity="0.32" stroke="#4c4970" stroke-width="1.4"/>
+                        <rect x="36" y="36" width="14" height="10" rx="2.5" fill="#d3d700" opacity="0.32" stroke="#4c4970" stroke-width="1.4"/>
+                        <rect x="25" y="28" width="14" height="8" rx="2" fill="#ec4505" opacity="0.28" stroke="#4c4970" stroke-width="1.2"/>
                     </svg>
                 </span>
                 <span class="label">Folder Tree Generator</span>
             </a>
 
-            <a class="box" href="https://my.causal.app/models/a311683741a848a3a28d419763f96fab?token=f7ba2be9c6144ee89e018fd79dff867b" target="_blank" rel="noopener">
+            <a class="box" href="https://my.causal.app/models/a311683741a848a3a28d419763f96fab?token=f7ba2be9c6144ee89e018fd79dff867b" target="_blank" rel="noopener" data-tip="Open the ECO FIN model in Causal.">
                 <span class="icon" aria-hidden="true">
                     <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <rect x="10" y="36" width="10" height="14" rx="2" fill="#00b2e8" opacity="0.36"/>
-                        <rect x="24" y="30" width="10" height="20" rx="2" fill="#d3d700" opacity="0.36"/>
-                        <rect x="38" y="22" width="10" height="28" rx="2" fill="#ec4505" opacity="0.32"/>
-                        <path d="M12 26c4-4 10-8 18-6s12 8 22 10" stroke="#4c4970" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <rect x="12" y="34" width="10" height="16" rx="2" fill="#00b2e8" opacity="0.35" />
+                        <rect x="26" y="28" width="10" height="22" rx="2" fill="#d3d700" opacity="0.35" />
+                        <rect x="40" y="22" width="10" height="28" rx="2" fill="#ec4505" opacity="0.32" />
+                        <path d="M12 32c5-6 10-10 18-8s12 8 22 4" stroke="#4c4970" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                     </svg>
                 </span>
                 <span class="label">ECO FIN Business Plan with CAUSAL</span>
             </a>
 
-            <a class="box" href="page_under_construction.html">
+            <a class="box" href="page_under_construction.html" data-tip="Coming soon.">
                 <span class="label">Page 3 (Coming Soon)</span>
             </a>
 
-            <a class="box" href="page_under_construction.html">
+            <a class="box" href="page_under_construction.html" data-tip="Coming soon.">
                 <span class="label">Page 4 (Coming Soon)</span>
             </a>
 
-            <a class="box" href="page_under_construction.html">
+            <a class="box" href="page_under_construction.html" data-tip="Coming soon.">
                 <span class="label">Page 5 (Coming Soon)</span>
             </a>
 
-            <a class="box" href="page_under_construction.html">
+            <a class="box" href="page_under_construction.html" data-tip="Coming soon.">
                 <span class="label">Page 6 (Coming Soon)</span>
             </a>
 
-            <a class="box" href="page_under_construction.html">
+            <a class="box" href="page_under_construction.html" data-tip="Coming soon.">
                 <span class="label">Page 7 (Coming Soon)</span>
             </a>
 
-            <a class="box" href="page_under_construction.html">
+            <a class="box" href="page_under_construction.html" data-tip="Coming soon.">
                 <span class="label">Page 8 (Coming Soon)</span>
             </a>
 

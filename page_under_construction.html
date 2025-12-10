@@ -38,7 +38,7 @@
             background: #fff;
             border-radius: 16px;
             padding: 34px 32px 32px;
-            width: min(640px, 96vw);
+            width: min(680px, 96vw);
             text-align: center;
             box-shadow: 0 15px 40px rgba(76, 73, 112, 0.12);
             border: 1px solid rgba(76, 73, 112, 0.08);
@@ -74,6 +74,16 @@
         .bars .deep-teal { background: var(--deep-teal); }
         .bars .yellow { background: var(--yellow); }
         .bars .orange { background: var(--orange); }
+
+        .page-logo {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 10px;
+        }
+
+        .page-logo img {
+            max-width: 240px;
+        }
 
         .nav-controls {
             display: flex;
@@ -137,6 +147,9 @@
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12l9-8 9 8"/><path d="M5 10v10h5v-6h4v6h5V10"/></svg>
                 <span>Home</span>
             </a>
+        </div>
+        <div class="page-logo">
+            <img src="logo.png" alt="Day One Logo">
         </div>
         <div class="bars" aria-hidden="true">
             <span class="teal"></span>
