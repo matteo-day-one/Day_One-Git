@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Day One – Tools</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f5f7fa;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* Logo */
+        .logo-container {
+            text-align: center;
+            margin-top: 40px;
+        }
+
+        .logo-container img {
+            max-width: 220px;
+        }
+
+        /* Title */
+        h1 {
+            margin-top: 20px;
+            font-size: 28px;
+            color: #333;
+            font-weight: 600;
+        }
+
+        /* Grid */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 20px;
+            max-width: 900px;
+            width: 90%;
+            margin-top: 40px;
+            padding-bottom: 60px;
+        }
+
+        /* Boxes */
+        .box {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            text-align: center;
+            font-size: 18px;
+            font-weight: 600;
+            color: #444;
+            text-decoration: none;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+            transition: all 0.2s ease;
+            border: 1px solid #ddd;
+        }
+
+        .box:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 18px rgba(0,0,0,0.15);
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Logo -->
+    <div class="logo-container">
+        <img src="logo.png" alt="Day One Logo">
+    </div>
+
+    <h1>Day One – Tools & Resources</h1>
+
+    <!-- Navigation Grid -->
+    <div class="grid">
+
+        <a class="box" href="folder-tree-generator.html">
+            Folder Tree Generator
+        </a>
+
+        <a class="box" href="page2.html">
+            Page 2 (Coming Soon)
+        </a>
+
+        <a class="box" href="page3.html">
+            Page 3 (Coming Soon)
+        </a>
+
+        <a class="box" href="page4.html">
+            Page 4 (Coming Soon)
+        </a>
+
+    </div>
+
+</body>
+</html>

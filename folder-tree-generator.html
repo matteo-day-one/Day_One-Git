@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Day One Project Generator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .folder-tree {
+            font-family: 'Courier New', Courier, monospace;
+            background-color: #1f2937;
+            color: #d1d5db;
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            line-height: 1.6;
+            font-size: 0.85rem;
+            max-height: 600px;
+            overflow-y: auto;
+        }
+        /* Style applied during PNG generation to ensure full height capture */
+        .folder-tree.capturing {
+            max-height: none !important;
+            height: auto !important;
+            overflow: visible !important;
+            width: 1000px !important; /* Fixed width for consistent high-res output */
+            position: absolute; /* Take out of flow to prevent scrollbar interference */
+            top: 0;
+            left: 0;
+            z-index: -1;
+        }
+        .folder { color: #60a5fa; font-weight: bold; }
+        .readme-tag { color: #10b981; font-size: 0.75rem; margin-left: 0.5rem; opacity: 0.7; }
+    </style>
+</head>
+<body class="bg-gray-900 text-white flex items-center justify-center min-h-screen p-4">
+
+    <div class="w-full max-w-4xl mx-auto p-6 md:p-8 bg-gray-800 rounded-xl shadow-2xl border border-gray-700">
+        <div class="text-center mb-8">
+            <h1 class="text-3xl font-bold text-white mb-2">Day One Project Generator</h1>
+            <p class="text-gray-400">Standardized folder structures with smart README generation.</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+            <div>
+                <label for="projectName" class="block text-sm font-medium text-gray-300 mb-2">Project Name</label>
+                <input type="text" id="projectName" class="w-full bg-gray-700 border border-gray-600 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-3" placeholder="e.g., HEAT2BATTERY" required>
+            </div>
+            <div>
+                <label for="projectType" class="block text-sm font-medium text-gray-300 mb-2">Project Type</label>
+                <select id="projectType" class="w-full bg-gray-700 border border-gray-600 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-3">
+                    <option value="ERC-PoC">Proof of Concept (ERC-PoC)</option>
+                    <option value="EIC-PATHFINDER">Pathfinder (EIC-PATHFINDER)</option>
+                    <option value="EIC-TRANSITION">Transition (EIC-TRANSITION)</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Preview Section -->
+        <div class="mb-8">
+            <div class="flex justify-between items-end mb-3">
+                <h2 class="text-lg font-semibold text-white">Structure Preview</h2>
+                <span class="text-xs text-gray-500">* READMEs are auto-generated based on folder depth</span>
+            </div>
+            <div id="structurePreview" class="folder-tree">
+                <!-- Preview content inserted by JS -->
+            </div>
+        </div>
+
+        <button id="createButton" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg transition duration-300 ease-in-out focus:outline-none focus:ring-4 focus:ring-blue-800 shadow-lg">
+            Generate & Download Zip
+        </button>
+
+        <div id="statusMessage" class="mt-4 text-center text-sm font-medium h-6"></div>
+    </div>
+
+    <script>
+        // --- 1. METADATA DEFINITIONS ---
+        const folderMetadata = {
+            "ROOT": { desc: "Project Root Container. This structure is standardized for Day One projects.", files: "" },
+            "01_General": { desc: "General project documentation, contractual obligations, and standard templates.", files: "" },
+            "01_Grant_Agreement": { desc: "The official contract with the EU/Funding Authority.", files: "- Grant Agreement (GA) PDF\n- Part A and Part B of the proposal\n- Data Sheet" },
+            "02_Consortium_Agreement": { desc: "The legal agreement between partners defining rights and obligations.", files: "- Signed Consortium Agreement (CA)\n- Accession Forms" },
+            "03_Amendment": { desc: "Official changes to the Grant Agreement.", files: "- AMD-[Number].pdf files\n- Requests for amendments" },
+            "04_Branding_and_Templates": { desc: "Standardized templates and EU visibility requirements.", files: "- Presentation slides (pptx) with EU logo\n- Deliverable document templates (docx)\n- High-res EU Emblems\n- Funding Statement text file" },
+            "02_Project_Management": { desc: "Day-to-day management of the project execution, including meetings, planning, finances, and dissemination tracking.", files: "" },
+            "01_Meetings": { desc: "Records of all project meetings.", files: "- Agendas\n- Minutes of Meetings (MoM)\n- Attendance lists" },
+            "02_Personal_Notes": { desc: "Rough notes, scratchpads, and brain dumps.", files: "- Unstructured text files\n- Draft ideas before formalization" },
+            "03_Timelines_and_Deadlines": { desc: "Time management and planning documents.", files: "- Gantt Charts\n- Work Breakdown Structure (WBS)\n- Internal deadlines list" },
+            "04_Pools": { desc: "Management of resource pools and common assets.", files: "- Resource allocation tables\n- Equipment lists" },
+            "05_Dissemination": { desc: "Tracking of all dissemination activities and materials.", files: "" },
+            "01_Papers_and_Manuscripts": { desc: "Scientific publications and manuscripts.", files: "- Draft manuscripts\n- Published papers (PDFs)\n- Peer review correspondence" },
+            "02_Posters_and_Presentations": { desc: "Materials presented at conferences and events.", files: "- Conference posters (PDF/PPTX)\n- Slide decks" },
+            "03_Website_and_Social_Media": { desc: "Content for online presence and social outreach.", files: "- Website copy drafts\n- Social media calendars\n- Graphics assets" },
+            "06_Financial_Reporting": { desc: "[AUDIT CRITICAL] Financial paper trail and reporting.", files: "- Monthly Timesheets (signed)\n- Invoices and Receipts for travel/consumables\n- Cost Statements sent to Coordinator" },
+            "07_Events_and_Conferences": { desc: "Tracking upcoming events, expos, and conferences.", files: "" },
+            "01_Upcoming_Events": { desc: "Details on future events to attend.", files: "- Event brochures\n- Registration details\n- Travel plans" },
+            "02_Event_Outcomes": { desc: "Reports and contacts gathered from attended events.", files: "- Trip reports\n- Collected business cards/contacts\n- Event photos" },
+            "03_Deliverables_and_Reporting": { desc: "Official project outputs and submission files.", files: "" },
+            "01_Drafts": { desc: "Work-in-progress deliverables.", files: "- Word documents in 'Track Changes' mode\n- Versions for internal review" },
+            "02_Finalised": { desc: "Final versions ready for submission to the portal.", files: "- Clean PDFs only\n- Submitted versions downloaded from the Portal" },
+            "04_Market_Intelligence": { desc: "External data gathering, market analysis, and ecosystem mapping.", files: "" },
+            "01_Market_Analysis": { desc: "Quantification of the market size and potential.", files: "- TAM/SAM/SOM calculations\n- Market reports and whitepapers" },
+            "02_Competitor_Analysis": { desc: "Competitive landscape and benchmarking.", files: "- Competitor feature matrices\n- SWOT analysis of competitors" },
+            "03_Use_Cases": { desc: "Definition of application scenarios.", files: "- User stories\n- Industrial use case definitions" },
+            "04_Partners_Landscape": { desc: "Potential industrial partners and value chain actors.", files: "" },
+            "01_Goods": { desc: "Suppliers of physical goods and materials.", files: "- Supplier catalogs\n- Quotes for materials\n- Component datasheets" },
+            "02_Services": { desc: "Providers of services and consultancy.", files: "- Service agreements\n- Consultant profiles\n- Service quotes" },
+            "03_Joint_Product_Development": { desc: "Collaborations for co-development of products.", files: "- Joint Development Agreements\n- Project briefs\n- Co-design documents" },
+            "05_Regulatory_Landscape": { desc: "Rules, Standards, and Certification requirements.", files: "- Relevant ISO/IEC standards\n- Certification roadmaps (e.g., CE, UN 38.3)" },
+            "05_Business_Intelligence": { desc: "Internal strategy formulation and business planning.", files: "" },
+            "01_Business_Model": { desc: "Business logic and value generation strategies.", files: "- Business Model Canvas (BMC)\n- Value Proposition Canvas" },
+            "02_Business_Plan": { desc: "The comprehensive business plan document.", files: "- Full Business Plan document (Word/PDF)" },
+            "03_Financial_Plan": { desc: "Economic projections and financial modeling.", files: "- P&L spreadsheets\n- ROI / NPV calculations\n- Cash flow forecasts" },
+            "04_Roadmap": { desc: "Strategic timeline for technology and commercialization.", files: "- Technology roadmap\n- Commercialization roadmap" },
+            "05_Fundraising": { desc: "Investor relations and fundraising materials.", files: "- Pitch Decks\n- Cap Table simulations\n- Investor contact list" },
+            "06_IP_and_Legal": { desc: "Protection of assets, legal agreements, and IP strategy.", files: "" },
+            "01_IP_Strategy": { desc: "Strategy for intellectual property protection.", files: "- Patent landscaping\n- Strategy documents (Patent vs Trade Secret)" },
+            "02_FtO_Analysis": { desc: "Freedom to Operate analysis.", files: "- Search reports\n- Legal opinions on infringement risks" },
+            "03_NDAs_and_Agreements": { desc: "[LEGAL] Signed contracts with third parties.", files: "- Signed NDAs (Non-Disclosure Agreements)\n- LOIs (Letters of Intent)\n- MoUs (Memorandum of Understanding)" },
+            "07_Technology": { desc: "Technical reference material, literature, and raw data.", files: "" },
+            "01_Literature": { desc: "Scientific state of the art.", files: "- Scientific papers (PDFs)\n- Bibliography" },
+            "02_Data": { desc: "Raw experimental or sensor data.", files: "- Experimental datasets\n- Sensor logs" },
+            "08_Scripting": { desc: "Code repositories and automation scripts.", files: "- Python/R scripts\n- Data processing code\n- Source code repositories" }
+        };
+
+        // --- 2. STRUCTURE DEFINITION ---
+        function defineStructure() {
+            return {
+                "01_General": { "01_Grant_Agreement": null, "02_Consortium_Agreement": null, "03_Amendment": null, "04_Branding_and_Templates": null },
+                "02_Project_Management": { 
+                    "01_Meetings": null, 
+                    "02_Personal_Notes": null, 
+                    "03_Timelines_and_Deadlines": null, 
+                    "04_Pools": null, 
+                    "05_Dissemination": {
+                        "01_Papers_and_Manuscripts": null,
+                        "02_Posters_and_Presentations": null,
+                        "03_Website_and_Social_Media": null
+                    },
+                    "06_Financial_Reporting": null,
+                    "07_Events_and_Conferences": {
+                        "01_Upcoming_Events": null,
+                        "02_Event_Outcomes": null
+                    }
+                },
+                "03_Deliverables_and_Reporting": { "01_Drafts": null, "02_Finalised": null },
+                "04_Market_Intelligence": { "01_Market_Analysis": null, "02_Competitor_Analysis": null, "03_Use_Cases": null, "04_Partners_Landscape": { "01_Goods": null, "02_Services": null, "03_Joint_Product_Development": null }, "05_Regulatory_Landscape": null },
+                "05_Business_Intelligence": { "01_Business_Model": null, "02_Business_Plan": null, "03_Financial_Plan": null, "04_Roadmap": null, "05_Fundraising": null },
+                "06_IP_and_Legal": { "01_IP_Strategy": null, "02_FtO_Analysis": null, "03_NDAs_and_Agreements": null },
+                "07_Technology": { "01_Literature": null, "02_Data": null },
+                "08_Scripting": null
+            };
+        }
+
+        // --- 3. UI LOGIC ---
+        const createButton = document.getElementById('createButton');
+        const projectNameInput = document.getElementById('projectName');
+        const projectTypeSelect = document.getElementById('projectType');
+        const statusMessage = document.getElementById('statusMessage');
+        const previewContainer = document.getElementById('structurePreview');
+
+        renderPreview();
+        projectTypeSelect.addEventListener('change', renderPreview);
+        projectNameInput.addEventListener('input', renderPreview);
+
+        function renderPreview() {
+            const rawName = projectNameInput.value.trim().toUpperCase() || "PROJECT";
+            const type = projectTypeSelect.value;
+            const rootName = `${rawName} | ${type}`;
+            const structure = defineStructure();
+            let html = '';
+
+            function buildHtml(obj, depth) {
+                let result = '';
+                const indent = '&nbsp;'.repeat(depth * 4);
+                const connector = depth > 0 ? '├── ' : '';
+                for (const key in obj) {
+                    result += `<div>${indent}${connector}<span class="folder">${key}</span> <span class="readme-tag">[+README.txt]</span></div>`;
+                    if (obj[key] !== null) result += buildHtml(obj[key], depth + 1);
+                }
+                return result;
+            }
+            html = `<div><span class="folder">${rootName}</span></div>`;
+            html += buildHtml(structure, 1);
+            previewContainer.innerHTML = html;
+        }
+
+        // --- 4. ZIP GENERATION ---
+        createButton.addEventListener('click', async () => {
+            const rawProjectName = projectNameInput.value.trim().toUpperCase();
+            const projectType = projectTypeSelect.value;
+            
+            if (!rawProjectName) {
+                displayMessage('Please enter a project name.', 'error');
+                return;
+            }
+
+            const rootName = `${rawProjectName} | ${projectType}`;
+            createButton.disabled = true;
+            createButton.innerHTML = `<svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white inline" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Processing...`;
+
+            try {
+                // --- STEP 1: Generate PNG Map ---
+                // Force full height capture by temporarily applying capturing class
+                previewContainer.classList.add('capturing');
+                const tags = document.querySelectorAll('.readme-tag');
+                tags.forEach(t => t.style.display = 'none');
+
+                // Wait for repaint
+                await new Promise(resolve => setTimeout(resolve, 100));
+
+                const canvas = await html2canvas(previewContainer, { 
+                    backgroundColor: "#1f2937", 
+                    scale: 2, // High resolution
+                    scrollY: -window.scrollY // Fix for scrolled down page
+                });
+                
+                previewContainer.classList.remove('capturing');
+                tags.forEach(t => t.style.display = 'inline');
+
+                const mapBase64 = canvas.toDataURL("image/png").split(',')[1];
+
+                // --- STEP 2: Generate ZIP ---
+                const zip = new JSZip();
+                const rootFolder = zip.folder(rootName);
+                const structure = defineStructure();
+
+                rootFolder.file(`${rawProjectName}_Folder_Map.png`, mapBase64, {base64: true});
+
+                // Root README
+                const rootMeta = folderMetadata["ROOT"];
+                let rootReadmeContent = `FOLDER: ${rootName}\n\nPURPOSE:\n${rootMeta.desc}\n\nCONTAINS:\n`;
+                for(const key in structure) { rootReadmeContent += `- ${key}\n`; }
+                rootFolder.file("README.txt", rootReadmeContent);
+
+                // Recursive folder building
+                async function processFolder(parentZip, structureObj) {
+                    for (const folderName in structureObj) {
+                        const newFolder = parentZip.folder(folderName);
+                        const meta = folderMetadata[folderName] || { desc: "No description.", files: "" };
+                        let readmeContent = `FOLDER: ${folderName}\n\nPURPOSE:\n${meta.desc}\n\n`;
+
+                        if (structureObj[folderName] !== null) {
+                            readmeContent += `CONTAINS SUBFOLDERS:\n`;
+                            for (const childKey in structureObj[folderName]) {
+                                readmeContent += `- ${childKey}\n`;
+                            }
+                            await processFolder(newFolder, structureObj[folderName]);
+                        } else {
+                            readmeContent += `EXPECTED FILES:\n${meta.files || "- [No specific file restrictions]"}`;
+                        }
+                        newFolder.file("README.txt", readmeContent);
+                    }
+                }
+
+                await processFolder(rootFolder, structure);
+
+                // Download
+                const content = await zip.generateAsync({ type: "blob" });
+                const link = document.createElement("a");
+                link.href = URL.createObjectURL(content);
+                link.download = `${rootName}.zip`;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                URL.revokeObjectURL(link.href);
+
+                displayMessage(`Downloaded: ${rootName}.zip`, 'success');
+
+            } catch (error) {
+                console.error(error);
+                previewContainer.classList.remove('capturing');
+                const tags = document.querySelectorAll('.readme-tag');
+                tags.forEach(t => t.style.display = 'inline');
+                displayMessage('Error generating zip file.', 'error');
+            } finally {
+                createButton.disabled = false;
+                createButton.innerHTML = 'Generate & Download Zip';
+            }
+        });
+
+        function displayMessage(msg, type) {
+            statusMessage.textContent = msg;
+            statusMessage.className = type === 'success' ? 'mt-4 text-center text-sm font-medium text-green-400' : 'mt-4 text-center text-sm font-medium text-red-400';
+            setTimeout(() => { statusMessage.textContent = ''; }, 5000);
+        }
+    </script>
+</body>
+</html>
