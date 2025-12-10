@@ -4,21 +4,54 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Day One – Tools</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@500;600;700&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --navy: #4c4970;
+            --lavender: #c2bfd1;
+            --teal: #00b2e8;
+            --deep-teal: #028598;
+            --yellow: #d3d700;
+            --orange: #ec4505;
+            --bg: #f7f8fb;
+            --card: #ffffff;
+            --shadow: 0 15px 40px rgba(76, 73, 112, 0.12);
+            --radius: 16px;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
         body {
-            font-family: Arial, sans-serif;
-            background: #f5f7fa;
+            font-family: 'Nunito', Arial, sans-serif;
+            background: radial-gradient(circle at 20% 20%, rgba(0, 178, 232, 0.08), transparent 32%),
+                        radial-gradient(circle at 80% 10%, rgba(211, 215, 0, 0.08), transparent 30%),
+                        radial-gradient(circle at 60% 70%, rgba(236, 69, 5, 0.06), transparent 26%),
+                        var(--bg);
             margin: 0;
-            padding: 0;
+            padding: 48px 18px 72px;
             display: flex;
             flex-direction: column;
             align-items: center;
+            color: var(--navy);
+        }
+
+        .shell {
+            width: min(1100px, 96vw);
+            background: var(--card);
+            border-radius: var(--radius);
+            padding: 32px 28px 42px;
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(76, 73, 112, 0.08);
         }
 
         /* Logo */
         .logo-container {
             text-align: center;
-            margin-top: 40px;
+            margin: 6px 0 18px;
         }
 
         .logo-container img {
@@ -27,73 +60,138 @@
 
         /* Title */
         h1 {
-            margin-top: 20px;
-            font-size: 28px;
-            color: #333;
-            font-weight: 600;
+            margin: 6px 0 8px;
+            font-size: clamp(28px, 3vw, 34px);
+            color: var(--navy);
+            font-weight: 700;
+            text-align: center;
+            letter-spacing: 0.3px;
         }
+
+        .subtitle {
+            text-align: center;
+            color: #6f6c8f;
+            margin: 0 0 32px;
+            font-size: 16px;
+            letter-spacing: 0.25px;
+        }
+
+        .bars {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin: 18px 0 10px;
+        }
+
+        .bars span {
+            display: block;
+            width: 52px;
+            height: 8px;
+            border-radius: 12px;
+        }
+
+        .bars .teal { background: var(--teal); }
+        .bars .deep-teal { background: var(--deep-teal); }
+        .bars .yellow { background: var(--yellow); }
+        .bars .orange { background: var(--orange); }
 
         /* Grid */
         .grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-            gap: 20px;
-            max-width: 900px;
-            width: 90%;
-            margin-top: 40px;
-            padding-bottom: 60px;
+            gap: 18px;
+            margin-top: 20px;
         }
 
         /* Boxes */
         .box {
-            background: white;
-            border-radius: 12px;
-            padding: 25px;
+            background: linear-gradient(135deg, #ffffff 0%, #fbfbff 100%);
+            border-radius: var(--radius);
+            padding: 22px 20px;
             text-align: center;
             font-size: 18px;
-            font-weight: 600;
-            color: #444;
+            font-weight: 700;
+            color: var(--navy);
             text-decoration: none;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.08);
-            transition: all 0.2s ease;
-            border: 1px solid #ddd;
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.04);
+            transition: transform 0.2s ease, box-shadow 0.2s ease, border 0.2s ease;
+            border: 1px solid rgba(76, 73, 112, 0.14);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .box::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(90deg, rgba(0, 178, 232, 0.12), rgba(211, 215, 0, 0.1), rgba(236, 69, 5, 0.12));
+            opacity: 0;
+            transition: opacity 0.2s ease;
+        }
+
+        .box span {
+            position: relative;
+            z-index: 1;
         }
 
         .box:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 6px 18px rgba(0,0,0,0.15);
+            transform: translateY(-4px);
+            box-shadow: 0 16px 30px rgba(76, 73, 112, 0.18);
+            border-color: rgba(0, 178, 232, 0.35);
+        }
+
+        .box:hover::before {
+            opacity: 1;
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 28px 12px 48px;
+            }
+            .shell {
+                padding: 26px 18px 32px;
+            }
         }
     </style>
 </head>
 
 <body>
 
-    <!-- Logo -->
-    <div class="logo-container">
-        <img src="logo.png" alt="Day One Logo">
-    </div>
+    <div class="shell">
+        <div class="logo-container">
+            <img src="logo.png" alt="Day One Logo">
+        </div>
 
-    <h1>Day One – Tools & Resources</h1>
+        <h1>Day One Tools & Resources</h1>
+        <p class="subtitle">A compact hub for project utilities, templates, and quick links.</p>
 
-    <!-- Navigation Grid -->
-    <div class="grid">
+        <div class="bars" aria-hidden="true">
+            <span class="teal"></span>
+            <span class="deep-teal"></span>
+            <span class="yellow"></span>
+            <span class="orange"></span>
+        </div>
 
-        <a class="box" href="folder-tree-generator.html">
-            Folder Tree Generator
-        </a>
+        <!-- Navigation Grid -->
+        <div class="grid">
 
-        <a class="box" href="page_under_construction.html">
-            Page 2 (Coming Soon)
-        </a>
+            <a class="box" href="folder-tree-generator.html">
+                <span>Folder Tree Generator</span>
+            </a>
 
-        <a class="box" href="page_under_construction.html">
-            Page 3 (Coming Soon)
-        </a>
+            <a class="box" href="page_under_construction.html">
+                <span>Page 2 (Coming Soon)</span>
+            </a>
 
-        <a class="box" href="page_under_construction.html">
-            Page 4 (Coming Soon)
-        </a>
+            <a class="box" href="page_under_construction.html">
+                <span>Page 3 (Coming Soon)</span>
+            </a>
 
+            <a class="box" href="page_under_construction.html">
+                <span>Page 4 (Coming Soon)</span>
+            </a>
+
+        </div>
     </div>
 
 </body>
