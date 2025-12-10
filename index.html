@@ -40,10 +40,10 @@
         }
 
         .shell {
-            width: min(1100px, 96vw);
+            width: min(1200px, 98vw);
             background: var(--card);
             border-radius: var(--radius);
-            padding: 32px 28px 42px;
+            padding: 40px 32px 50px;
             box-shadow: var(--shadow);
             border: 1px solid rgba(76, 73, 112, 0.08);
         }
@@ -108,7 +108,6 @@
             background: linear-gradient(135deg, #ffffff 0%, #fbfbff 100%);
             border-radius: var(--radius);
             padding: 22px 20px;
-            text-align: center;
             font-size: 18px;
             font-weight: 700;
             color: var(--navy);
@@ -118,6 +117,10 @@
             border: 1px solid rgba(76, 73, 112, 0.14);
             position: relative;
             overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
         }
 
         .box::before {
@@ -142,6 +145,90 @@
 
         .box:hover::before {
             opacity: 1;
+        }
+
+        .box .icon {
+            width: 52px;
+            height: 52px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .box .label {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Suggestion form */
+        .request-card {
+            margin-top: 28px;
+            background: linear-gradient(135deg, #ffffff 0%, #fbfbff 100%);
+            border-radius: var(--radius);
+            padding: 22px 20px;
+            box-shadow: 0 10px 24px rgba(76, 73, 112, 0.12);
+            border: 1px solid rgba(76, 73, 112, 0.1);
+        }
+
+        .request-card h2 {
+            margin: 0 0 8px;
+            font-size: 19px;
+            color: var(--navy);
+        }
+
+        .request-card p {
+            margin: 0 0 14px;
+            color: #6f6c8f;
+            font-size: 15px;
+        }
+
+        .request-card textarea {
+            width: 100%;
+            min-height: 120px;
+            resize: vertical;
+            padding: 12px 12px;
+            font-family: 'Nunito', Arial, sans-serif;
+            border-radius: 12px;
+            border: 1px solid rgba(76, 73, 112, 0.18);
+            background: #f6f7fb;
+            color: var(--navy);
+        }
+
+        .request-card textarea:focus {
+            outline: none;
+            border-color: var(--teal);
+            box-shadow: 0 0 0 3px rgba(0, 178, 232, 0.18);
+        }
+
+        .request-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            align-items: center;
+            margin-top: 12px;
+        }
+
+        .primary-btn {
+            background: linear-gradient(90deg, var(--teal), var(--orange));
+            border: none;
+            color: #fff;
+            font-weight: 700;
+            padding: 12px 18px;
+            border-radius: 12px;
+            cursor: pointer;
+            letter-spacing: 0.3px;
+            box-shadow: 0 12px 22px rgba(76, 73, 112, 0.18);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .primary-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 16px 28px rgba(76, 73, 112, 0.22);
+        }
+
+        .helper {
+            color: #6f6c8f;
+            font-size: 14px;
         }
 
         @media (max-width: 600px) {
@@ -176,23 +263,82 @@
         <div class="grid">
 
             <a class="box" href="folder-tree-generator.html">
-                <span>Folder Tree Generator</span>
+                <span class="icon" aria-hidden="true">
+                    <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect x="8" y="18" width="22" height="14" rx="3" fill="#00b2e8" opacity="0.28"/>
+                        <rect x="16" y="28" width="30" height="16" rx="4" fill="#028598" opacity="0.35"/>
+                        <rect x="28" y="20" width="28" height="18" rx="4" fill="#d3d700" opacity="0.3"/>
+                        <path d="M18 46h28" stroke="#4c4970" stroke-width="2" stroke-linecap="round"/>
+                    </svg>
+                </span>
+                <span class="label">Folder Tree Generator</span>
+            </a>
+
+            <a class="box" href="https://my.causal.app/models/a311683741a848a3a28d419763f96fab?token=f7ba2be9c6144ee89e018fd79dff867b" target="_blank" rel="noopener">
+                <span class="icon" aria-hidden="true">
+                    <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect x="10" y="36" width="10" height="14" rx="2" fill="#00b2e8" opacity="0.36"/>
+                        <rect x="24" y="30" width="10" height="20" rx="2" fill="#d3d700" opacity="0.36"/>
+                        <rect x="38" y="22" width="10" height="28" rx="2" fill="#ec4505" opacity="0.32"/>
+                        <path d="M12 26c4-4 10-8 18-6s12 8 22 10" stroke="#4c4970" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </span>
+                <span class="label">ECO FIN Business Plan with CAUSAL</span>
             </a>
 
             <a class="box" href="page_under_construction.html">
-                <span>Page 2 (Coming Soon)</span>
+                <span class="label">Page 3 (Coming Soon)</span>
             </a>
 
             <a class="box" href="page_under_construction.html">
-                <span>Page 3 (Coming Soon)</span>
+                <span class="label">Page 4 (Coming Soon)</span>
             </a>
 
             <a class="box" href="page_under_construction.html">
-                <span>Page 4 (Coming Soon)</span>
+                <span class="label">Page 5 (Coming Soon)</span>
+            </a>
+
+            <a class="box" href="page_under_construction.html">
+                <span class="label">Page 6 (Coming Soon)</span>
+            </a>
+
+            <a class="box" href="page_under_construction.html">
+                <span class="label">Page 7 (Coming Soon)</span>
+            </a>
+
+            <a class="box" href="page_under_construction.html">
+                <span class="label">Page 8 (Coming Soon)</span>
             </a>
 
         </div>
+
+        <div class="request-card">
+            <h2>Submit a tool request</h2>
+            <p>Tell us what would make your work easier. We’ll review and get back quickly.</p>
+            <textarea id="toolIdea" placeholder="Describe the tool, the problem it solves, and any must-have features."></textarea>
+            <div class="request-actions">
+                <button id="submitRequest" class="primary-btn">Send to Matteo</button>
+                <span class="helper">Your email client will open a draft to matteo.ambrosetti@day-one.biz</span>
+            </div>
+        </div>
     </div>
 
+    <script>
+        const submitBtn = document.getElementById('submitRequest');
+        const ideaField = document.getElementById('toolIdea');
+
+        submitBtn.addEventListener('click', () => {
+            const idea = (ideaField.value || '').trim();
+            if (!idea) {
+                ideaField.focus();
+                return;
+            }
+            const subject = encodeURIComponent('New Tool Request');
+            const bodyText = `Hi Matteo,\n\nHere is a tool request:\n\n${idea}\n\nThanks!`;
+            const body = encodeURIComponent(bodyText);
+            const mailtoLink = `mailto:matteo.ambrosetti@day-one.biz?subject=${subject}&body=${body}`;
+            window.location.href = mailtoLink;
+        });
+    </script>
 </body>
 </html>
